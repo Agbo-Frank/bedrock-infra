@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checkout-config
+  namespace: retail-app
+  labels:
+    app: checkout
+data:
+  RETAIL_CHECKOUT_PERSISTENCE_PROVIDER: "redis"
+  RETAIL_CHECKOUT_REDIS_ADDR: "redis:6379"
