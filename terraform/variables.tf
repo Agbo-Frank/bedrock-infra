@@ -10,8 +10,3 @@ variable "title" {
   default     = "project-bedrock"
 }
 
-variable "environment" {
-  description = "Environment label applied to resources"
-  type        = string
-  default     = "prod"
-}

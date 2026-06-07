@@ -27,3 +27,8 @@ output "cart_irsa_role_arn" {
   description = "ARN of the cart IRSA role for the cart-sa ServiceAccount"
   value       = module.iam.cart_irsa_role_arn
 }
+
+output "github_oidc_role_arn" {
+  description = "ARN of the GitHub Actions IAM role — set as AWS_ROLE_ARN secret in your repo"
+  value       = module.github_oidc.github_actions_role_arn
+}

@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
-# tf-destroy.sh — tear down all Terraform-managed infrastructure
-# Usage: ./scripts/tf-destroy.sh
+# terraform/destroy.sh — destroy all Terraform-managed infrastructure
+# Called by main.sh. Do not run directly.
 
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-# shellcheck source=common.sh
-source "$SCRIPT_DIR/common.sh"
-
-check_deps
+source "$SCRIPT_DIR/../common.sh"
 
 log_warn "This will DESTROY all infrastructure managed by Terraform."
 log_warn "This action cannot be undone."
@@ -26,7 +23,6 @@ terraform -chdir="$TERRAFORM_DIR" init -reconfigure
 log_info "Destroying infrastructure..."
 terraform -chdir="$TERRAFORM_DIR" destroy -auto-approve
 
-# Clean up saved outputs
 if [[ -f "$TF_OUTPUTS_FILE" ]]; then
   rm "$TF_OUTPUTS_FILE"
   log_info "Removed $TF_OUTPUTS_FILE"

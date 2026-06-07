@@ -86,15 +86,19 @@ bedrock-infra/
 ├── lambda/
 │   └── index.js              # S3 event handler
 ├── scripts/
-│   ├── common.sh             # Shared utilities (sourced by others)
-│   ├── tf-plan.sh            # terraform init + plan
-│   ├── tf-apply.sh           # terraform init + apply, saves outputs
-│   ├── tf-destroy.sh         # terraform destroy (with confirmation)
-│   ├── k8s-configure.sh      # aws eks update-kubeconfig
-│   ├── k8s-manifests.sh      # kubectl apply all manifests in order
-│   ├── k8s-secrets.sh        # create K8s secrets from Secrets Manager
-│   ├── k8s-configmaps.sh     # patch ConfigMaps with live RDS endpoints
-│   └── deploy.sh             # end-to-end orchestrator
+│   ├── common.sh             # Shared utilities (sourced by all scripts)
+│   ├── deploy.sh             # Top-level entry point — runs terraform + k8s
+│   ├── terraform/
+│   │   ├── main.sh           # Entry point: plan | apply | destroy
+│   │   ├── plan.sh
+│   │   ├── apply.sh
+│   │   └── destroy.sh
+│   └── k8s/
+│       ├── main.sh           # Entry point: configure | manifests | secrets | configmaps | all
+│       ├── configure.sh
+│       ├── manifests.sh
+│       ├── secrets.sh
+│       └── configmaps.sh
 └── .github/workflows/
     ├── terraform-plan.yml    # runs on PR → posts plan as comment
     └── terraform-apply.yml   # runs on merge to main → applies
@@ -141,15 +145,15 @@ The S3 bucket that stores Terraform state must be created manually before runnin
 
 ```bash
 aws s3api create-bucket \
-  --bucket bedrock-terraform-state-026138522504 \
+  --bucket bedrock-terraform-state-861079997875 \
   --region us-east-1
 
 aws s3api put-bucket-versioning \
-  --bucket bedrock-terraform-state-026138522504 \
+  --bucket bedrock-terraform-state-861079997875 \
   --versioning-configuration Status=Enabled
 
 aws s3api put-bucket-encryption \
-  --bucket bedrock-terraform-state-026138522504 \
+  --bucket bedrock-terraform-state-861079997875 \
   --server-side-encryption-configuration \
     '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
 ```
@@ -208,25 +212,25 @@ This runs everything end-to-end:
 
 ```bash
 # 1. Preview what terraform will create
-./scripts/tf-plan.sh
+./scripts/terraform/main.sh plan
 
 # 2. Apply infrastructure
-./scripts/tf-apply.sh
+./scripts/terraform/main.sh apply
 
 # 3. Configure kubectl
-./scripts/k8s-configure.sh
+./scripts/k8s/main.sh configure
 
 # 4. Deploy all Kubernetes resources
-./scripts/k8s-manifests.sh
+./scripts/k8s/main.sh manifests
 
 # 5. Create secrets (RDS passwords)
-./scripts/k8s-secrets.sh
+./scripts/k8s/main.sh secrets
 
 # 6. Patch configmaps with real RDS endpoints
-./scripts/k8s-configmaps.sh
+./scripts/k8s/main.sh configmaps
 
 # 7. Re-apply so pods pick up the updated config
-./scripts/k8s-manifests.sh
+./scripts/k8s/main.sh manifests
 ```
 
 ### Re-deploy k8s only (terraform already applied)
@@ -311,13 +315,14 @@ terraform -chdir=terraform output
 | `vpc_id` | VPC ID |
 | `assets_bucket_name` | S3 bucket for product images |
 | `cart_irsa_role_arn` | IAM role ARN annotated on the cart ServiceAccount |
+| `github_oidc_role_arn` | IAM role ARN for GitHub Actions — set as `AWS_ROLE_ARN` repo secret |
 
 ---
 
 ## Tearing down
 
 ```bash
-./scripts/tf-destroy.sh
+./scripts/terraform/main.sh destroy
 ```
 
 You will be prompted to type `yes` to confirm. This destroys all AWS resources managed by Terraform. The Terraform state S3 bucket is not deleted — remove it manually if needed.

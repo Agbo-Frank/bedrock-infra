@@ -14,18 +14,16 @@ TERRAFORM_DIR="$REPO_DIR/terraform"
 K8S_DIR="$REPO_DIR/k8s"
 TF_OUTPUTS_FILE="$SCRIPTS_DIR/.tf-outputs"
 
-# ─── Logging ────────────────────────────────────────────────────────────────
 
 log_info()    { echo -e "${BLUE}[INFO]${NC}  $*"; }
 log_success() { echo -e "${GREEN}[OK]${NC}    $*"; }
 log_warn()    { echo -e "${YELLOW}[WARN]${NC}  $*"; }
 log_error()   { echo -e "${RED}[ERROR]${NC} $*" >&2; }
 
-# ─── Dependency check ───────────────────────────────────────────────────────
 
-check_deps() {
+check_terraform_deps() {
   local missing=0
-  for cmd in terraform aws kubectl jq; do
+  for cmd in terraform; do
     if ! command -v "$cmd" &>/dev/null; then
       log_error "Required tool not found: $cmd"
       missing=1
@@ -35,21 +33,34 @@ check_deps() {
     log_error "Install missing tools and re-run."
     exit 1
   fi
-  log_success "All required tools found (terraform, aws, kubectl, jq)"
+  log_success "All required tools found (terraform)"
 }
 
-# ─── Terraform output helper ────────────────────────────────────────────────
+check_k8s_deps() {
+  local missing=0
+  for cmd in aws kubectl jq; do
+    if ! command -v "$cmd" &>/dev/null; then
+      log_error "Required tool not found: $cmd"
+      missing=1
+    fi
+  done
+  if [[ $missing -eq 1 ]]; then
+    log_error "Install missing tools and re-run."
+    exit 1
+  fi
+  log_success "All required tools found (aws, kubectl, jq)"
+}
+
 
 get_tf_output() {
   local key="$1"
   terraform -chdir="$TERRAFORM_DIR" output -raw "$key" 2>/dev/null
 }
 
-# ─── Load saved terraform outputs ───────────────────────────────────────────
 
 load_tf_outputs() {
   if [[ ! -f "$TF_OUTPUTS_FILE" ]]; then
-    log_error ".tf-outputs not found. Run tf-apply.sh first."
+    log_error ".tf-outputs not found. Run terraform/apply.sh first."
     exit 1
   fi
   # shellcheck source=/dev/null

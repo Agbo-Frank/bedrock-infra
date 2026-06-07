@@ -1,0 +1,16 @@
+# Terraform
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfplan
+terraform/crash.log
+
+# Script runtime files — contain AWS account IDs and ARNs, never commit
+scripts/.tf-outputs
+
+# Grading output — generated after terraform apply, commit intentionally
+# grading.json is NOT ignored so you can git add and push it
+
+# macOS
+.DS_Store
