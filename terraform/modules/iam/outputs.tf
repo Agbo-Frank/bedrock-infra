@@ -8,6 +8,11 @@ output "dev_user_arn" {
   value       = aws_iam_user.dev_view.arn
 }
 
+output "cart_irsa_role_arn" {
+  description = "ARN of the cart IRSA role — annotate the cart-sa ServiceAccount with this"
+  value       = aws_iam_role.cart_irsa.arn
+}
+
 output "dev_access_key_id" {
   description = "Access Key ID for bedrock-dev-view (share with grader)"
   value       = aws_iam_access_key.dev_view.id

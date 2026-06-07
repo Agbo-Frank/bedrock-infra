@@ -28,6 +28,10 @@ terraform {
   }
 }
 
+locals {
+  assets_bucket_name = "bedrock-assets-alt-soe-025-4161"
+}
+
 provider "aws" {
   region = var.region                                                               
                                                                               
@@ -72,13 +76,24 @@ module "iam" {
   source = "./modules/iam"
 
   title              = var.title
-  assets_bucket_name = "bedrock-assets-alt-soe-025-4161"
+  assets_bucket_name = local.assets_bucket_name
+  oidc_provider_arn  = module.eks.oidc_provider_arn
+  oidc_provider_url  = module.eks.oidc_provider_url
+  dynamodb_table_arn = module.dynamodb.table_arn
 }
 
 module "lambda" {
   source = "./modules/lambda"
 
   title              = var.title
-  assets_bucket_name = "bedrock-assets-alt-soe-025-4161"
+  assets_bucket_name = local.assets_bucket_name
   lambda_source_path = "${path.root}/../lambda"
+}
+
+module "github_oidc" {
+  source = "./modules/github_oidc"
+
+  title           = var.title
+  github_username = "GITHUB_USERNAME"
+  github_repo     = "project-bedrock"
 }

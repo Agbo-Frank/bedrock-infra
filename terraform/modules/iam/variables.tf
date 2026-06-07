@@ -9,3 +9,21 @@ variable "title" {
   type        = string
   default     = "project-bedrock"
 }
+
+variable "oidc_provider_arn" {
+  description = "ARN of the EKS OIDC provider for IRSA trust policies"
+  type        = string
+  default     = ""
+}
+
+variable "oidc_provider_url" {
+  description = "URL of the EKS OIDC provider for IRSA trust policies"
+  type        = string
+  default     = ""
+}
+
+variable "dynamodb_table_arn" {
+  description = "ARN of the DynamoDB cart table"
+  type        = string
+  default     = ""
+}

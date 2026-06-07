@@ -42,3 +42,58 @@ resource "aws_iam_user_policy_attachment" "dev_s3_put" {
   user       = aws_iam_user.dev_view.name
   policy_arn = aws_iam_policy.dev_s3_put.arn
 }
+
+resource "aws_iam_role" "cart_irsa" {
+  name = "${var.title}-cart-irsa"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = var.oidc_provider_arn
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          StringEquals = {
+            "${replace(var.oidc_provider_url, "https://", "")}:sub" = "system:serviceaccount:retail-app:cart-sa"
+            "${replace(var.oidc_provider_url, "https://", "")}:aud" = "sts.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = {
+    Name = "${var.title}-cart-irsa"
+  }
+}
+
+resource "aws_iam_policy" "cart_dynamodb" {
+  name        = "${var.title}-cart-dynamodb"
+  description = "Allows cart pod to read and write the DynamoDB cart table"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query",
+          "dynamodb:Scan"
+        ]
+        Resource = var.dynamodb_table_arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "cart_dynamodb" {
+  role       = aws_iam_role.cart_irsa.name
+  policy_arn = aws_iam_policy.cart_dynamodb.arn
+}

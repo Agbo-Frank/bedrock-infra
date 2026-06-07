@@ -20,5 +20,10 @@ output "vpc_id" {
 
 output "assets_bucket_name" {
   description = "S3 assets bucket name"
-  value       = "bedrock-assets-alt-soe-025-4161"
+  value       = local.assets_bucket_name
+}
+
+output "cart_irsa_role_arn" {
+  description = "ARN of the cart IRSA role for the cart-sa ServiceAccount"
+  value       = module.iam.cart_irsa_role_arn
 }
