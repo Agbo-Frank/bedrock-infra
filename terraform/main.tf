@@ -33,20 +33,20 @@ locals {
 }
 
 provider "aws" {
-  region = var.region                                                               
-                                                                              
+  region = var.region
+
   default_tags {
-    tags = {    
+    tags = {
       Project = "karatu-2025-capstone"
-    }              
-  }                                                                             
+    }
+  }
 }
 
 module "vpc" {
   source = "./modules/vpc"
 
-  title  = var.title
-  vpc_name = "${var.title}-vpc"
+  title        = var.title
+  vpc_name     = "${var.title}-vpc"
   cluster_name = "${var.title}-cluster"
 }
 
@@ -58,13 +58,13 @@ module "eks" {
   dev_user_arn = module.iam.dev_user_arn
 }
 
-module "rds" {                                                                         
+module "rds" {
   source = "./modules/rds"
 
-  title              = var.title                                                          
+  title              = var.title
   private_subnet_ids = module.vpc.private_subnet_ids
-  vpc_id             = module.vpc.vpc_id                                                  
-}                                                                                      
+  vpc_id             = module.vpc.vpc_id
+}
 
 module "dynamodb" {
   source = "./modules/dynamodb"

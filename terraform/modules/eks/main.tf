@@ -91,12 +91,12 @@ resource "aws_eks_cluster" "main" {
       enabled = true
     }
   }
-  
+
   enabled_cluster_log_types = [
-    "api", 
-    "audit", 
-    "authenticator",       
-    "controllerManager", 
+    "api",
+    "audit",
+    "authenticator",
+    "controllerManager",
     "scheduler"
   ]
 
