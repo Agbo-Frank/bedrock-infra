@@ -10,3 +10,8 @@ variable "title" {
   default     = "project-bedrock"
 }
 
+variable "github_username" {
+  description = "GitHub username or org that owns the repo — used to scope the OIDC trust policy"
+  type        = string
+}
+

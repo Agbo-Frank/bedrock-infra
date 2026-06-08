@@ -37,4 +37,6 @@ jobs:
 
       - name: Terraform Apply
         working-directory: terraform
+        env:
+          TF_VAR_github_username: ${{ secrets.USERNAME || github.repository_owner }}
         run: terraform apply -auto-approve

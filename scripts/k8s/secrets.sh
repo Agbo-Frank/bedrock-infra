@@ -26,22 +26,22 @@ get_secret_password() {
 log_info "Fetching catalog DB password from Secrets Manager..."
 CATALOG_PASSWORD=$(get_secret_password "project-bedrock/rds/mysql")
 
-kubectl create secret generic catalog-db-secret \
+kubectl create secret generic catalog-secret \
   --namespace "$NAMESPACE" \
   --from-literal=RETAIL_CATALOG_PERSISTENCE_PASSWORD="$CATALOG_PASSWORD" \
   --dry-run=client -o yaml | kubectl apply -f -
 
-log_success "catalog-db-secret applied"
+log_success "catalog-secret applied"
 
 
 log_info "Fetching orders DB password from Secrets Manager..."
 ORDERS_PASSWORD=$(get_secret_password "project-bedrock/rds/postgres")
 
-kubectl create secret generic orders-db-secret \
+kubectl create secret generic orders-secret \
   --namespace "$NAMESPACE" \
   --from-literal=RETAIL_ORDERS_PERSISTENCE_PASSWORD="$ORDERS_PASSWORD" \
   --dry-run=client -o yaml | kubectl apply -f -
 
-log_success "orders-db-secret applied"
+log_success "orders-secret applied"
 
 log_success "All Kubernetes secrets created in namespace: $NAMESPACE"

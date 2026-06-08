@@ -7,5 +7,4 @@ metadata:
     app: cart
 data:
   RETAIL_CART_PERSISTENCE_PROVIDER: "dynamodb"
-  RETAIL_CART_DYNAMODB_TABLE_NAME: "project-bedrock-cart"
   AWS_REGION: "us-east-1"
