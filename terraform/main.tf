@@ -95,5 +95,5 @@ module "github_oidc" {
 
   title           = var.title
   github_username = var.github_username
-  github_repo     = "project-bedrock"
+  github_repo     = "bedrock-infra"
 }
