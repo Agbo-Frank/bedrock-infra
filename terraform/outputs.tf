@@ -32,3 +32,20 @@ output "github_oidc_role_arn" {
   description = "ARN of the GitHub Actions IAM role — set as AWS_ROLE_ARN secret in your repo"
   value       = module.github_oidc.github_actions_role_arn
 }
+
+output "dev_console_password" {
+  description = "Initial console password for bedrock-dev-view (share with grader)"
+  value       = module.iam.dev_console_password
+  sensitive   = true
+}
+
+output "dev_access_key_id" {
+  description = "Access Key ID for bedrock-dev-view (share with grader)"
+  value       = module.iam.dev_access_key_id
+}
+
+output "dev_secret_access_key" {
+  description = "Secret Access Key for bedrock-dev-view (share with grader)"
+  value       = module.iam.dev_secret_access_key
+  sensitive   = true
+}

@@ -1,0 +1,11 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored — never commit real values.
+
+# AWS region to deploy all resources
+region = "us-east-1"
+
+# Name prefix applied to all resources
+title = "project-bedrock"
+
+# Your GitHub username or org (used to scope the OIDC trust policy)
+github_username = "your-github-username"
