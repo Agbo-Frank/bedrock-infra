@@ -12,7 +12,7 @@
   "cluster_endpoint": {
     "sensitive": false,
     "type": "string",
-    "value": "https://36B736B53E8512F8E050E49903707823.gr7.us-east-1.eks.amazonaws.com"
+    "value": "https://5A65B18864CA15BB3E9E83FAB6FE0758.gr7.us-east-1.eks.amazonaws.com"
   },
   "cluster_name": {
     "sensitive": false,
@@ -24,6 +24,16 @@
     "type": "string",
     "value": "arn:aws:iam::861079997875:role/project-bedrock-github-actions"
   },
+  "mysql_endpoint": {
+    "sensitive": false,
+    "type": "string",
+    "value": "project-bedrock-mysql.c6zaqmcm66e6.us-east-1.rds.amazonaws.com:3306"
+  },
+  "postgres_endpoint": {
+    "sensitive": false,
+    "type": "string",
+    "value": "project-bedrock-postgres.c6zaqmcm66e6.us-east-1.rds.amazonaws.com:5432"
+  },
   "region": {
     "sensitive": false,
     "type": "string",
@@ -32,6 +42,6 @@
   "vpc_id": {
     "sensitive": false,
     "type": "string",
-    "value": "vpc-083898eb351ebf410"
+    "value": "vpc-072cebd9f2ab1fda5"
   }
 }

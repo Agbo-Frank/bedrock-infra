@@ -15,3 +15,8 @@ variable "github_username" {
   type        = string
 }
 
+variable "admin_arn" {
+  description = "ARN of the IAM identity (user or role) used to administer the EKS cluster locally"
+  type        = string
+}
+

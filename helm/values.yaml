@@ -1,0 +1,101 @@
+# Static Helm overrides — committed to source control.
+# RDS endpoints, IRSA ARN, and DB passwords are injected via values.generated.yaml
+# (gitignored, produced by scripts from Terraform + Secrets Manager).
+
+cart:
+  fullnameOverride: carts
+  dynamodb:
+    create: false
+  opentelemetry:
+    enabled: false
+  app:
+    persistence:
+      provider: dynamodb
+      dynamodb:
+        tableName: Items
+        createTable: false
+  serviceAccount:
+    create: true
+    name: cart-sa
+    annotations: {}
+
+catalog:
+  fullnameOverride: catalog
+  mysql:
+    create: false
+  opensearch:
+    create: false
+  opentelemetry:
+    enabled: false
+  app:
+    search:
+      enabled: false
+    persistence:
+      provider: mysql
+      endpoint: ""
+      database: catalogdb
+      secret:
+        create: true
+        name: catalog-db
+        username: dbadmin
+        password: ""
+
+orders:
+  fullnameOverride: orders
+  postgresql:
+    create: false
+  rabbitmq:
+    create: true
+  opentelemetry:
+    enabled: false
+  app:
+    persistence:
+      provider: postgres
+      endpoint: ""
+      database: ordersdb
+      secret:
+        create: true
+        name: orders-db
+        username: dbadmin
+        password: ""
+    messaging:
+      provider: rabbitmq
+      rabbitmq:
+        secret:
+          create: true
+          name: orders-rabbitmq
+          username: guest
+          password: guest
+
+checkout:
+  fullnameOverride: checkout
+  redis:
+    create: true
+  opentelemetry:
+    enabled: false
+  app:
+    persistence:
+      provider: redis
+    endpoints:
+      orders: http://orders:80
+
+ui:
+  fullnameOverride: ui
+  opentelemetry:
+    enabled: false
+  app:
+    endpoints:
+      catalog: http://catalog:80
+      carts: http://carts:80
+      checkout: http://checkout:80
+      orders: http://orders:80
+  ingress:
+    enabled: true
+    className: alb
+    annotations:
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+      alb.ingress.kubernetes.io/healthcheck-path: /
+      alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
+      alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+      alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"

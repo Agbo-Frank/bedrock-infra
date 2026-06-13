@@ -15,3 +15,8 @@ variable "dev_user_arn" {
   type        = string
   default     = ""
 }
+
+variable "admin_arn" {
+  description = "ARN of the IAM identity (user or role) that administers the cluster locally"
+  type        = string
+}

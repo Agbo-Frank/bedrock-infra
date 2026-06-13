@@ -128,6 +128,32 @@ resource "aws_eks_access_entry" "dev_view" {
   type          = "STANDARD"
 }
 
+resource "aws_eks_access_policy_association" "dev_view" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.dev_user_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
+resource "aws_eks_access_entry" "admin" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.admin_arn
+  type          = "STANDARD"
+}
+
+resource "aws_eks_access_policy_association" "admin" {
+  cluster_name  = aws_eks_cluster.main.name
+  principal_arn = var.admin_arn
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+
+  access_scope {
+    type = "cluster"
+  }
+}
+
 data "aws_caller_identity" "current" {}
 
 # Fetch the TLS certificate of the EKS OIDC issuer endpoint

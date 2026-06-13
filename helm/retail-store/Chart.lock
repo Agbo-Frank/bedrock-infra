@@ -1,0 +1,18 @@
+dependencies:
+- name: retail-store-sample-cart-chart
+  repository: file://../cart
+  version: 1.6.1
+- name: retail-store-sample-catalog-chart
+  repository: file://../catalog
+  version: 1.6.1
+- name: retail-store-sample-checkout-chart
+  repository: file://../checkout
+  version: 1.6.1
+- name: retail-store-sample-orders-chart
+  repository: file://../orders
+  version: 1.6.1
+- name: retail-store-sample-ui-chart
+  repository: file://../ui
+  version: 1.6.1
+digest: sha256:29f43334e0fcc167ba6a505f9bdbd164261f67bc69458b238089a6031aee9b99
+generated: "2026-06-13T09:34:36.040513+01:00"
