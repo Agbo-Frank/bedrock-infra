@@ -33,19 +33,18 @@ output "github_oidc_role_arn" {
   value       = module.github_oidc.github_actions_role_arn
 }
 
+output "mysql_endpoint" {
+  description = "MySQL RDS connection endpoint (host:port) for the catalog service"
+  value       = module.rds.mysql_endpoint
+}
+
+output "postgres_endpoint" {
+  description = "PostgreSQL RDS connection endpoint (host:port) for the orders service"
+  value       = module.rds.postgres_endpoint
+}
+
 output "dev_console_password" {
   description = "Initial console password for bedrock-dev-view (share with grader)"
   value       = module.iam.dev_console_password
-  sensitive   = true
-}
-
-output "dev_access_key_id" {
-  description = "Access Key ID for bedrock-dev-view (share with grader)"
-  value       = module.iam.dev_access_key_id
-}
-
-output "dev_secret_access_key" {
-  description = "Secret Access Key for bedrock-dev-view (share with grader)"
-  value       = module.iam.dev_secret_access_key
   sensitive   = true
 }

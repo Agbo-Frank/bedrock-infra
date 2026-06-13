@@ -9,9 +9,11 @@ terraform/crash.log
 
 # Script runtime files — contain AWS account IDs and ARNs, never commit
 scripts/.tf-outputs
+helm/values.generated.yaml
+helm/retail-store/charts/
+grading.credentials.json
 
-# Grading output — generated after terraform apply, commit intentionally
-# grading.json is NOT ignored so you can git add and push it
+# grading.json contains non-sensitive terraform outputs only — safe to commit
 
 # macOS
 .DS_Store

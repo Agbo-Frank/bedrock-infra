@@ -3,10 +3,8 @@
 #
 # Usage:
 #   ./scripts/k8s/main.sh configure    # update kubeconfig
-#   ./scripts/k8s/main.sh manifests    # apply all manifests
-#   ./scripts/k8s/main.sh secrets      # create K8s secrets from Secrets Manager
-#   ./scripts/k8s/main.sh configmaps   # patch ConfigMaps with live RDS endpoints
-#   ./scripts/k8s/main.sh all          # run all steps in order (full k8s deploy)
+#   ./scripts/k8s/main.sh helm         # deploy via upstream Helm chart
+#   ./scripts/k8s/main.sh all          # configure + helm
 
 set -euo pipefail
 
@@ -17,13 +15,11 @@ check_k8s_deps
 
 usage() {
   echo ""
-  echo "Usage: $0 [configure|manifests|secrets|configmaps|all]"
+  echo "Usage: $0 [configure|helm|all]"
   echo ""
   echo "  configure   Point kubectl at the EKS cluster"
-  echo "  manifests   Apply all Kubernetes manifests in dependency order"
-  echo "  secrets     Create K8s secrets from AWS Secrets Manager"
-  echo "  configmaps  Patch ConfigMaps with live RDS endpoints"
-  echo "  all         Run all steps end-to-end (configure → manifests → secrets → configmaps → manifests)"
+  echo "  helm        Deploy the upstream retail-store Helm chart"
+  echo "  all         Run configure and helm in order"
   echo ""
 }
 
@@ -31,32 +27,17 @@ case "${1:-}" in
   configure)
     bash "$SCRIPT_DIR/configure.sh"
     ;;
-  manifests)
-    bash "$SCRIPT_DIR/manifests.sh"
-    ;;
-  secrets)
-    bash "$SCRIPT_DIR/secrets.sh"
-    ;;
-  configmaps)
-    bash "$SCRIPT_DIR/configmaps.sh"
+  helm)
+    bash "$SCRIPT_DIR/helm.sh"
     ;;
   all)
     log_info "k8s all — running full Kubernetes deployment"
     echo ""
-    log_info "Step 1/5 — Configure kubectl"
+    log_info "Step 1/2 — Configure kubectl"
     bash "$SCRIPT_DIR/configure.sh"
 
-    log_info "Step 2/5 — Apply manifests (first pass)"
-    bash "$SCRIPT_DIR/manifests.sh"
-
-    log_info "Step 3/5 — Create secrets from Secrets Manager"
-    bash "$SCRIPT_DIR/secrets.sh"
-
-    log_info "Step 4/5 — Patch ConfigMaps with RDS endpoints"
-    bash "$SCRIPT_DIR/configmaps.sh"
-
-    log_info "Step 5/5 — Re-apply manifests (picks up updated config)"
-    bash "$SCRIPT_DIR/manifests.sh"
+    log_info "Step 2/2 — Deploy Helm chart"
+    bash "$SCRIPT_DIR/helm.sh"
 
     echo ""
     log_success "Kubernetes deployment complete."

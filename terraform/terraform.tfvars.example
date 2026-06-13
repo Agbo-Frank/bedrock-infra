@@ -9,3 +9,7 @@ title = "project-bedrock"
 
 # Your GitHub username or org (used to scope the OIDC trust policy)
 github_username = "your-github-username"
+
+# ARN of the IAM identity you use locally to administer the EKS cluster
+# Run: aws sts get-caller-identity --query Arn --output text
+admin_arn = "arn:aws:iam::ACCOUNT_ID:user/YOUR_IAM_USER"

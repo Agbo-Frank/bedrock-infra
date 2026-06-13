@@ -56,6 +56,7 @@ module "eks" {
   cluster_name = "${var.title}-cluster"
   subnet_ids   = module.vpc.private_subnet_ids
   dev_user_arn = module.iam.dev_user_arn
+  admin_arn    = var.admin_arn
 }
 
 module "rds" {
